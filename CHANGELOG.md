@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sprint 3] - 2026-10-25
+### Added
+- Implemented hyperparameter tuning and multi-seed retraining engine in `src/tune.py`.
+- Conducted Stage A single-factor sweeps across $\alpha$, $\gamma$, and decay schedules, followed by Stage B grid search (63 trials total) saved to `results/tuning_results.csv`.
+- Discovered optimal hyperparameters: $\alpha=0.7$, $\gamma=0.99$, $\text{decay}=0.999$, $\epsilon_{\text{min}}=0.01$, yielding convergence at episode 800 (nearly $3\times$ faster than baseline $\alpha=0.1$ at episode 2300) with mean validation reward +8.30.
+- Exported winning configuration to `config/best.yaml`.
+- Executed 10,000-episode retraining across 5 independent seeds (101–105) achieving 100% convergence across all seeds (mean convergence episode 800.0).
+- Saved multi-seed checkpoints and training logs to `results/final_runs/` and exported primary production model to `results/q_table_final.npy` (derived from seed 104 with +8.34 validation reward).
+- Added unit tests in `tests/test_tune.py` covering candidate selection algorithm, config generation, and multi-seed retraining pipelines (61 tests passing).
+
 ## [Sprint 2] - 2026-10-25
 ### Added
 - Implemented `QLearningAgent` in `src/agent.py` with Bellman update rule, unbiased uniform random tie-breaking, and `.npy` save/load.

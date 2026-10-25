@@ -1,0 +1,53 @@
+{
+  "task_id": "T-0003",
+  "from": "builder",
+  "to": "reviewer",
+  "artifact": "harness/artifacts/T-0003/05-build.md",
+  "status": "complete",
+  "summary": "Implemented hyperparameter tuning search (63 trials) and multi-seed retraining (5 seeds, 10k episodes). Discovered alpha=0.7 converges in 800 episodes with +8.30 validation reward.",
+  "inputs_consumed": [
+    "harness/artifacts/T-0003/03-plan.md",
+    "harness/artifacts/T-0003/04-tests.md"
+  ],
+  "acceptance_refs": [
+    "AC-005-a",
+    "AC-005-b",
+    "AC-006-a"
+  ],
+  "open_questions": [],
+  "assumptions": [
+    "Alpha 0.7 converges 2.7x faster than baseline alpha 0.1 in deterministic Taxi-v4"
+  ],
+  "files_touched": [
+    "src/tune.py",
+    "config/best.yaml",
+    "results/tuning_results.csv",
+    "results/final_runs/q_table_seed_101.npy",
+    "results/final_runs/q_table_seed_102.npy",
+    "results/final_runs/q_table_seed_103.npy",
+    "results/final_runs/q_table_seed_104.npy",
+    "results/final_runs/q_table_seed_105.npy",
+    "results/final_runs/training_log_seed_101.csv",
+    "results/final_runs/training_log_seed_102.csv",
+    "results/final_runs/training_log_seed_103.csv",
+    "results/final_runs/training_log_seed_104.csv",
+    "results/final_runs/training_log_seed_105.csv",
+    "results/q_table_final.npy",
+    "harness/artifacts/T-0003/05-build.md"
+  ],
+  "checks_run": [
+    {
+      "cmd": "pytest tests/ -v",
+      "exit": 0
+    },
+    {
+      "cmd": "python -m ruff check src tests",
+      "exit": 0
+    },
+    {
+      "cmd": "python -m ruff format --check src tests",
+      "exit": 0
+    }
+  ],
+  "next_expected_artifact": "06-review.md"
+}

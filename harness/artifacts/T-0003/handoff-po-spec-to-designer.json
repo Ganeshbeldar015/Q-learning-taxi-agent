@@ -1,0 +1,32 @@
+{
+  "task_id": "T-0003",
+  "from": "po-spec",
+  "to": "designer",
+  "artifact": "harness/artifacts/T-0003/01-spec.md",
+  "status": "complete",
+  "summary": "Completed T-0003 spec covering Stage A/B hyperparameter tuning, selection criteria, best.yaml generation, and 5-seed retraining.",
+  "inputs_consumed": [
+    "docs/raw.md",
+    "docs/harness.md",
+    "harness/tasks/T-0003.md"
+  ],
+  "acceptance_refs": [
+    "AC-005-a",
+    "AC-005-b",
+    "AC-006-a"
+  ],
+  "open_questions": [],
+  "assumptions": [
+    "Search focuses on alpha, gamma, and epsilon_decay"
+  ],
+  "files_touched": [
+    "harness/artifacts/T-0003/01-spec.md"
+  ],
+  "checks_run": [
+    {
+      "cmd": "python scripts/check_harness.py",
+      "exit": 0
+    }
+  ],
+  "next_expected_artifact": "02-design.md"
+}
