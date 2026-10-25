@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sprint 4] - 2026-10-25
+### Added
+- Implemented `src/evaluate.py` with 95% bootstrap confidence interval calculation, greedy test evaluation, and comparative policy benchmarking across 4 policies (Random, Untrained, Baseline, Tuned).
+- Conducted 1,000 unseen test episodes (seeds 10000–10999) on the primary production model (`results/q_table_final.npy`): mean reward +7.87 (95% CI: [7.69, 8.03]), mean steps 13.13, 100.0% success rate, exactly 0 illegal actions.
+- Generated `results/comparison_table.csv` and `results/test_metrics.json`.
+- Implemented `src/plots.py` generating publication-quality figures V1–V8 (PNG, 150+ DPI) and V9 (animated GIF):
+  - `V1_learning_curve.png` (5-seed mean training trajectory with $\pm 1\sigma$ band)
+  - `V2_steps_per_episode.png` (policy length compression)
+  - `V3_epsilon_schedule.png` (multiplicative decay & floor)
+  - `V4_validation_curve.png` (validation reward with +7.0 threshold & convergence marker)
+  - `V5_tuning_heatmap.png` (parameter convergence speed matrix)
+  - `V6_test_reward_distribution.png` (test rewards histogram & KDE)
+  - `V7_test_steps_distribution.png` (test steps histogram)
+  - `V8_policy_grid.png` (5x5 spatial grid with directional policy arrows)
+  - `V9_replay.gif` (animated greedy rollout demonstration)
+- Created interactive Jupyter notebook `notebooks/taxi_q_learning.ipynb` executing end-to-end with 0 errors.
+- Authored comprehensive technical report `report/REPORT.md` documenting mathematical formulation, ablation studies, and empirical benchmarks.
+- Added unit tests in `tests/test_evaluate.py` and `tests/test_plots.py` (68 total tests passing).
+
 ## [Sprint 3] - 2026-10-25
 ### Added
 - Implemented hyperparameter tuning and multi-seed retraining engine in `src/tune.py`.

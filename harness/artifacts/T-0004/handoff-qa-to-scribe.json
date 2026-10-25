@@ -1,0 +1,34 @@
+{
+  "task_id": "T-0004",
+  "from": "qa",
+  "to": "scribe",
+  "artifact": "harness/artifacts/T-0004/07-qa.md",
+  "status": "complete",
+  "summary": "QA evaluation passed for T-0004. 1000-episode test metrics (reward 7.87, 13.13 steps, 100% success), comparison table, and figures V1-V9 ratified.",
+  "inputs_consumed": [
+    "harness/artifacts/T-0004/05-build.md",
+    "harness/artifacts/T-0004/06-review.md",
+    "harness/artifacts/T-0004/06b-security.md"
+  ],
+  "acceptance_refs": [
+    "AC-007-a",
+    "AC-007-b",
+    "AC-008-a",
+    "AC-008-b",
+    "AC-010-a"
+  ],
+  "open_questions": [],
+  "assumptions": [
+    "Scribe will compose notebooks/taxi_q_learning.ipynb, report/REPORT.md, and update README.md and CHANGELOG.md"
+  ],
+  "files_touched": [
+    "harness/artifacts/T-0004/07-qa.md"
+  ],
+  "checks_run": [
+    {
+      "cmd": "pytest tests/ -v",
+      "exit": 0
+    }
+  ],
+  "next_expected_artifact": "08-docs.md"
+}

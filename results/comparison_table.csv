@@ -1,0 +1,5 @@
+Policy,Episodes,Mean Reward,Std Reward,95% CI,Mean Steps,Success Rate,Illegal Actions
+Random Policy,1000,-772.63,98.97,N/A,196.6,5.0%,64124
+Untrained Q-Agent,1000,-768.14,105.68,"[-774.66, -760.83]",196.3,4.8%,63647
+Baseline Trained Model,1000,7.91,2.57,"[7.75, 8.07]",13.1,100.0%,0
+Tuned Final Model,1000,7.87,2.61,"[7.69, 8.03]",13.1,100.0%,0
