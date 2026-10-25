@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HarnessExecutionState",
+  "type": "object",
+  "required": [
+    "harness_version",
+    "mode",
+    "sprint",
+    "current_stage",
+    "attempts",
+    "breaker",
+    "updated_at"
+  ],
+  "properties": {
+    "harness_version": { "type": "string" },
+    "profile": { "type": "string" },
+    "derived_from": {
+      "type": "object",
+      "properties": {
+        "raw_md_sha": { "type": "string" },
+        "harness_md_sha": { "type": "string" }
+      }
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["DISCOVERY", "CURATION", "SCAFFOLD", "EXECUTE", "RETRO"]
+    },
+    "sprint": { "type": "integer", "minimum": 0 },
+    "task_id": { "type": "string" },
+    "current_stage": { "type": "string" },
+    "stages": { "type": "object" },
+    "lanes": { "type": "array" },
+    "attempts": { "type": "object" },
+    "last_commit": { "type": ["string", "null"] },
+    "last_gate": { "type": "object" },
+    "breaker": {
+      "type": "object",
+      "required": ["tripped"],
+      "properties": {
+        "tripped": { "type": "boolean" },
+        "reason": { "type": ["string", "null"] }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

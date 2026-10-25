@@ -1,0 +1,1 @@
+{"ts":"2026-10-25T18:00:29Z","task":"T-0000","stage":"scaffold","agent":"orchestrator","event":"boot","name":"G0","status":"in_progress","cmd":"python scripts/check_harness.py","exit":0}
