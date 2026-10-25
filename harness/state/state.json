@@ -10,21 +10,21 @@
   "task_id": "T-0000",
   "current_stage": "scaffold",
   "stages": {
-    "scaffold": "in_progress"
+    "scaffold": "done"
   },
   "lanes": [],
   "attempts": {
     "scaffold": 1
   },
-  "last_commit": null,
+  "last_commit": "abf004e9b6fb1fdc0bf2f8466d05fd044cb67a67",
   "last_gate": {
     "name": "G0",
-    "status": "pending",
-    "at": "2026-10-25T18:00:00Z"
+    "status": "pass",
+    "at": "2026-10-25T18:20:00Z"
   },
   "breaker": {
     "tripped": false,
     "reason": null
   },
-  "updated_at": "2026-10-25T18:00:00Z"
+  "updated_at": "2026-10-25T18:21:00Z"
 }
