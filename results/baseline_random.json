@@ -1,0 +1,12 @@
+{
+  "policy": "random",
+  "episodes": 1000,
+  "seed": 42,
+  "mean_reward": -772.629,
+  "std_reward": 98.96758741628493,
+  "mean_steps": 196.563,
+  "median_steps": 200.0,
+  "success_rate": 0.05,
+  "truncation_rate": 0.95,
+  "illegal_actions": 64124
+}

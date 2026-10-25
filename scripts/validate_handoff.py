@@ -61,6 +61,9 @@ def validate_handoff(handoff_data: dict, root: Path = ROOT) -> tuple[bool, list[
                 f"Role '{role_from}' must record at least one check in 'checks_run'"
             )
         for c in checks:
+            # Test Author's red test run intentionally exits non-zero
+            if role_from == "test-author" and "pytest" in c.get("cmd", ""):
+                continue
             if c.get("exit") != 0:
                 errors.append(
                     f"Check '{c.get('cmd')}' failed with exit code {c.get('exit')}"

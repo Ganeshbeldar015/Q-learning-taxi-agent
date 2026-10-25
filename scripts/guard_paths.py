@@ -30,6 +30,8 @@ DEFAULT_ALLOW_LISTS = {
     "builder": [
         "src/**",
         "config/**",
+        "requirements.txt",
+        "results/**",
         "harness/artifacts/*/05-build*.md",
         "harness/artifacts/*/handoff-*.json",
     ],

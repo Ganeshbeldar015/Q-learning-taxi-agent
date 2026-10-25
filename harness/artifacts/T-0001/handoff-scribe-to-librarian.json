@@ -1,0 +1,34 @@
+{
+  "task_id": "T-0001",
+  "from": "scribe",
+  "to": "librarian",
+  "artifact": "harness/artifacts/T-0001/08-docs.md",
+  "status": "complete",
+  "summary": "Updated README.md and CHANGELOG.md with verified T-0001 baseline benchmarks and setup instructions.",
+  "inputs_consumed": [
+    "harness/artifacts/T-0001/07-qa.md"
+  ],
+  "acceptance_refs": [
+    "AC-001-a",
+    "AC-001-b",
+    "AC-002-a",
+    "AC-002-b",
+    "AC-002-c"
+  ],
+  "open_questions": [],
+  "assumptions": [
+    "Baseline numbers match results/baseline_random.json"
+  ],
+  "files_touched": [
+    "README.md",
+    "CHANGELOG.md",
+    "harness/artifacts/T-0001/08-docs.md"
+  ],
+  "checks_run": [
+    {
+      "cmd": "python scripts/check_harness.py",
+      "exit": 0
+    }
+  ],
+  "next_expected_artifact": "handoff-librarian-to-orchestrator.json"
+}

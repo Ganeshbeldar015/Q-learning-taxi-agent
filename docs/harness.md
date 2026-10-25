@@ -256,9 +256,6 @@ The canonical commands agents may execute:
 
 ## 15. Open Questions
 
-*(Empty — all requirements and technical constraints from `docs/raw.md` are resolved)*
-
----
 
 ## 16. Definition of Done
 

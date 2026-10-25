@@ -24,6 +24,8 @@ Implement clean, minimal, deterministic code within assigned module lanes to mak
 ## Allowed paths
 - `src/**`
 - `config/**`
+- `requirements.txt`
+- `results/**`
 - `harness/artifacts/*/05-build*.md`
 - `harness/artifacts/*/handoff-*.json`
 
