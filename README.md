@@ -45,6 +45,12 @@ python -c "from src.tune import run_tuning_pipeline, retrain_final_models; from 
 python -m src.evaluate
 ```
 
+### Launch Interactive Web Dashboard
+```bash
+python -m src.dashboard
+```
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser to interactively control the taxi simulation, inspect live Q-values, compare policies, and view figures.
+
 ### Generate Publication Figures (V1 through V9)
 ```bash
 python -m src.plots
