@@ -23,7 +23,9 @@ export default function ControlsPanel({
   isPlaying,
   onTogglePlayPause,
   onStepDelta,
-  onJumpToStep
+  onJumpToStep,
+  speedMs = 550,
+  setSpeedMs
 }) {
   return (
     <div className="sim-controls">
@@ -100,6 +102,38 @@ export default function ControlsPanel({
           End <FaForwardFast style={{ marginLeft: '4px' }} />
         </button>
       </div>
+
+      {/* Travel Pace Selector */}
+      {setSpeedMs && (
+        <div className="control-row" style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          <span className="control-label" style={{ fontSize: '0.78rem' }}>Pace:</span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {[
+              { label: 'Cinematic (0.75x)', ms: 750 },
+              { label: 'Smooth (1x)', ms: 550 },
+              { label: 'Fast (1.5x)', ms: 350 },
+              { label: 'Rapid (2x)', ms: 200 }
+            ].map((item) => (
+              <button
+                key={item.ms}
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setSpeedMs(item.ms)}
+                style={{
+                  fontSize: '0.72rem',
+                  padding: '3px 9px',
+                  background: speedMs === item.ms ? 'var(--primary-maroon)' : '#ffffff',
+                  color: speedMs === item.ms ? '#ffffff' : 'var(--text-main)',
+                  borderColor: speedMs === item.ms ? 'var(--primary-maroon)' : 'var(--border-dark)',
+                  fontWeight: speedMs === item.ms ? 700 : 500
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -25,6 +25,7 @@ export default function App() {
   const [trace, setTrace] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [speedMs, setSpeedMs] = useState(550); // Default 550ms for smooth cinematic movement
   const playIntervalRef = useRef(null);
 
   // Fetch rollout simulation
@@ -63,14 +64,14 @@ export default function App() {
             return prev;
           }
         });
-      }, 350);
+      }, speedMs);
     } else {
       if (playIntervalRef.current) clearInterval(playIntervalRef.current);
     }
     return () => {
       if (playIntervalRef.current) clearInterval(playIntervalRef.current);
     };
-  }, [isPlaying, trace.length]);
+  }, [isPlaying, trace.length, speedMs]);
 
   const handleRandomizeSeed = () => {
     const nextSeed = Math.floor(10000 + Math.random() * 999);
@@ -195,6 +196,8 @@ export default function App() {
               onTogglePlayPause={() => setIsPlaying(p => !p)}
               onStepDelta={handleStepDelta}
               onJumpToStep={handleJumpToStep}
+              speedMs={speedMs}
+              setSpeedMs={setSpeedMs}
             />
 
             {/* Shortest Path Trajectory & Clipboard Share */}

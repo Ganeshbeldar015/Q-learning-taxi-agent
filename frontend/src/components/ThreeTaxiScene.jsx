@@ -19,17 +19,18 @@ export default function ThreeTaxiScene({ currentTrace, currentStepIdx, onJumpToS
 
   // Mesh refs for animated updates
   const taxiGroupRef = useRef(null);
+  const wheelsRef = useRef([]);
   const passengerGroupRef = useRef(null);
   const destBeaconRef = useRef(null);
+  const beamMeshRef = useRef(null);
   const pathLinesRef = useRef([]);
   const waypointsRef = useRef([]);
 
-  // Target coordinates for smooth animation
+  // Target coordinates for smooth fluid animation
   const animState = useRef({
     targetPos: new THREE.Vector3(0, 0, 0),
     targetRotY: 0,
-    currentPos: new THREE.Vector3(0, 0, 0),
-    currentRotY: 0
+    hopOffset: 0
   });
 
   // Convert (row, col) to 3D world (x, z)
@@ -216,12 +217,14 @@ export default function ThreeTaxiScene({ currentTrace, currentStepIdx, onJumpToS
       [-0.4, 0.18, 0.42], [-0.4, 0.18, -0.42],
       [0.4, 0.18, 0.42], [0.4, 0.18, -0.42]
     ];
+    wheelsRef.current = [];
     wheelOffsets.forEach(([wx, wy, wz]) => {
       const wheel = new THREE.Mesh(wheelGeo, wheelMat);
       wheel.rotation.x = Math.PI / 2;
       wheel.position.set(wx, wy, wz);
       wheel.castShadow = true;
       taxiGroup.add(wheel);
+      wheelsRef.current.push(wheel);
     });
 
     // Headlights
@@ -268,13 +271,44 @@ export default function ThreeTaxiScene({ currentTrace, currentStepIdx, onJumpToS
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      // Smooth taxi movement lerp
+      // Smooth, continuous cinematic taxi movement
       if (taxiGroupRef.current) {
-        taxiGroupRef.current.position.lerp(animState.current.targetPos, 0.18);
-        // Smooth rotation slerp
-        const currentRot = taxiGroupRef.current.rotation.y;
-        const targetRot = animState.current.targetRotY;
-        taxiGroupRef.current.rotation.y += (targetRot - currentRot) * 0.2;
+        const taxi = taxiGroupRef.current;
+        const prevX = taxi.position.x;
+        const prevZ = taxi.position.z;
+
+        // Smooth glide toward target cell center
+        taxi.position.x += (animState.current.targetPos.x - taxi.position.x) * 0.14;
+        taxi.position.z += (animState.current.targetPos.z - taxi.position.z) * 0.14;
+
+        // Instantaneous displacement
+        const dx = taxi.position.x - prevX;
+        const dz = taxi.position.z - prevZ;
+        const speed = Math.hypot(dx, dz);
+
+        // Shortest-arc smooth angular rotation slerp
+        let diff = animState.current.targetRotY - taxi.rotation.y;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        taxi.rotation.y += diff * 0.15;
+
+        // Dynamic chassis physics: lean into turns and road bobbing
+        taxi.rotation.z = -diff * 0.22;
+        taxi.rotation.x = speed * 0.35;
+
+        // Road vibration bounce when rolling
+        const roadBounce = Math.sin(Date.now() * 0.02) * 0.015 * Math.min(speed * 20, 1);
+
+        // Smooth decay for hop animation (on pickup/dropoff)
+        animState.current.hopOffset *= 0.88;
+        taxi.position.y = roadBounce + animState.current.hopOffset;
+
+        // Spin wheels based on distance traveled
+        if (wheelsRef.current && wheelsRef.current.length > 0) {
+          wheelsRef.current.forEach(w => {
+            w.rotation.y += speed * 5.5;
+          });
+        }
       }
 
       // Pulsing destination beacon
@@ -325,6 +359,8 @@ export default function ThreeTaxiScene({ currentTrace, currentStepIdx, onJumpToS
     else if (step.action === 1) animState.current.targetRotY = Math.PI / 2; // North
     else if (step.action === 2) animState.current.targetRotY = 0; // East
     else if (step.action === 3) animState.current.targetRotY = Math.PI; // West
+    else if (step.action === 4) animState.current.hopOffset = 0.22; // Suspension hop on pickup
+    else if (step.action === 5) animState.current.hopOffset = 0.35; // Celebration bounce on dropoff
 
     // 2. Update Passenger Position / Boarding
     if (passengerGroupRef.current) {
