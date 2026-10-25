@@ -176,17 +176,20 @@ DASHBOARD_HTML = """<!DOCTYPE html>
   <title>Taxi-v4 Q-Learning Agent Dashboard</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --green: #22c55e;
-      --red: #ef4444;
-      --yellow: #eab308;
-      --gold: #f59e0b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary-maroon: #800000;
+      --primary-maroon-dark: #660000;
+      --primary-maroon-light: #991b1b;
+      --primary-maroon-soft: rgba(128, 0, 0, 0.08);
+      --accent-gold: #f59e0b;
+      --accent-gold-dark: #d97706;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --green: #16a34a;
+      --red: #dc2626;
+      --yellow: #ca8a04;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -201,18 +204,26 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(128, 0, 0, 0.04);
     }
-    h1 { font-size: 1.6rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+    h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary-maroon); display: flex; align-items: center; gap: 10px; }
     .badge {
       font-size: 0.75rem;
       padding: 4px 10px;
       border-radius: 9999px;
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(22, 163, 74, 0.1);
       color: var(--green);
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      border: 1px solid rgba(22, 163, 74, 0.25);
       font-weight: 600;
+    }
+    .badge-maroon {
+      background: var(--primary-maroon-soft);
+      color: var(--primary-maroon);
+      border: 1px solid rgba(128, 0, 0, 0.2);
     }
     .tabs {
       display: flex;
@@ -220,7 +231,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       margin-bottom: 24px;
     }
     .tab-btn {
-      background: var(--card-bg);
+      background: #ffffff;
       color: var(--text-muted);
       border: 1px solid var(--border);
       padding: 10px 20px;
@@ -229,12 +240,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .tab-btn:hover { color: #fff; border-color: var(--accent); }
+    .tab-btn:hover { color: var(--primary-maroon); border-color: var(--primary-maroon); }
     .tab-btn.active {
-      background: var(--accent);
-      color: #0f172a;
-      border-color: var(--accent);
-      box-shadow: 0 0 16px var(--accent-glow);
+      background: var(--primary-maroon);
+      color: #ffffff;
+      border-color: var(--primary-maroon);
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
     }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -250,12 +261,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
     .card-title {
       font-size: 1.1rem;
       font-weight: 600;
       margin-bottom: 16px;
-      color: #fff;
+      color: var(--primary-maroon);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -267,7 +279,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       width: 400px;
       height: 400px;
       margin: 0 auto 16px auto;
-      background: #090d16;
+      background: #f1f5f9;
       border: 3px solid #64748b;
       border-radius: 8px;
       display: grid;
@@ -276,16 +288,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
     .cell {
       position: relative;
-      border: 1px dashed rgba(100, 116, 139, 0.25);
+      border: 1px dashed rgba(100, 116, 139, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.85rem;
-      color: #475569;
+      color: #94a3b8;
     }
     /* Taxi Walls */
-    .cell.wall-r { border-right: 4px solid #cbd5e1 !important; }
-    .cell.wall-l { border-left: 4px solid #cbd5e1 !important; }
+    .cell.wall-r { border-right: 5px solid #1e293b !important; }
+    .cell.wall-l { border-left: 5px solid #1e293b !important; }
 
     .landmark {
       position: absolute;
@@ -297,20 +309,20 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       justify-content: center;
       font-size: 1.25rem;
       font-weight: bold;
-      opacity: 0.35;
+      opacity: 0.45;
       z-index: 1;
     }
-    .landmark.R { top: 10px; left: 10px; background: rgba(239, 68, 68, 0.4); color: #f87171; border: 2px solid #ef4444; }
-    .landmark.G { top: 10px; right: 10px; background: rgba(34, 197, 94, 0.4); color: #4ade80; border: 2px solid #22c55e; }
-    .landmark.Y { bottom: 10px; left: 10px; background: rgba(234, 179, 8, 0.4); color: #fde047; border: 2px solid #eab308; }
-    .landmark.B { bottom: 10px; right: 90px; background: rgba(59, 130, 246, 0.4); color: #60a5fa; border: 2px solid #3b82f6; }
+    .landmark.R { top: 10px; left: 10px; background: rgba(239, 68, 68, 0.35); color: #b91c1c; border: 2px solid #ef4444; }
+    .landmark.G { top: 10px; right: 10px; background: rgba(34, 197, 94, 0.35); color: #15803d; border: 2px solid #22c55e; }
+    .landmark.Y { bottom: 10px; left: 10px; background: rgba(234, 179, 8, 0.35); color: #a16207; border: 2px solid #eab308; }
+    .landmark.B { bottom: 10px; right: 90px; background: rgba(59, 130, 246, 0.35); color: #1d4ed8; border: 2px solid #3b82f6; }
 
     .taxi-avatar {
       position: absolute;
       width: 64px;
       height: 64px;
-      background: var(--gold);
-      border: 2px solid #fff;
+      background: var(--accent-gold);
+      border: 2px solid #ffffff;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -318,7 +330,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       font-size: 2rem;
       z-index: 10;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
     }
     .passenger-avatar {
       position: absolute;
@@ -331,7 +343,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       width: 72px;
       height: 72px;
       border-radius: 12px;
-      border: 3px dashed var(--accent);
+      border: 3px dashed var(--primary-maroon);
       z-index: 2;
       animation: pulse 1.5s infinite;
     }
@@ -354,16 +366,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
     label { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); min-width: 80px; }
     select, input {
-      background: #0f172a;
+      background: #ffffff;
       border: 1px solid var(--border);
-      color: #fff;
+      color: var(--text);
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.9rem;
     }
     .btn {
-      background: var(--accent);
-      color: #0f172a;
+      background: var(--primary-maroon);
+      color: #ffffff;
       border: none;
       padding: 9px 16px;
       border-radius: 6px;
@@ -374,12 +386,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       align-items: center;
       gap: 6px;
     }
-    .btn:hover { opacity: 0.9; }
+    .btn:hover { background: var(--primary-maroon-dark); }
     .btn-secondary {
-      background: #334155;
-      color: #fff;
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
     }
-    .btn-secondary:hover { background: #475569; }
+    .btn-secondary:hover { background: #e2e8f0; }
 
     /* STATS & TELEMETRY */
     .stats-row {
@@ -389,13 +402,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       margin-bottom: 16px;
     }
     .stat-box {
-      background: #0f172a;
+      background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px;
       text-align: center;
     }
-    .stat-val { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .stat-val { font-size: 1.4rem; font-weight: 700; color: var(--text); }
     .stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
     /* Q-VALUE BARS */
@@ -413,7 +426,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
     .q-track {
       height: 16px;
-      background: #0f172a;
+      background: #f1f5f9;
       border-radius: 4px;
       overflow: hidden;
       border: 1px solid var(--border);
@@ -421,10 +434,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
     .q-fill {
       height: 100%;
-      background: #475569;
+      background: #cbd5e1;
       transition: width 0.2s ease;
     }
-    .q-fill.best { background: var(--accent); }
+    .q-fill.best { background: var(--primary-maroon); }
 
     /* TABLE */
     table {
@@ -438,7 +451,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border-bottom: 1px solid var(--border);
       font-size: 0.9rem;
     }
-    th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+    th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; background: #f8fafc; }
 
     /* FIGURE GALLERY */
     .gallery-grid {
@@ -451,6 +464,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
     .figure-card img {
       width: 100%;
@@ -465,9 +479,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 <body>
 
   <header>
-    <h1>🚖 Taxi-v4 Q-Learning Agent Dashboard <span class="badge">100% Success Rate</span></h1>
-    <div style="font-size: 0.85rem; color: var(--text-muted);">
-      Policy: <strong>Tabular Q-Learning (α=0.7, γ=0.99)</strong> | Target Destination: <strong>Optimal Routing</strong>
+    <div>
+      <h1>🚖 Taxi-v4 Q-Learning Agent Dashboard <span class="badge">100% Success Rate</span></h1>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+        Policy: <strong>Tabular Q-Learning (α=0.7, γ=0.99)</strong> | Architecture: <strong>Optimal Deterministic Routing</strong>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="https://canva.link/vog4wcqpdx5qgqx" target="_blank" class="btn" style="text-decoration: none; font-size: 0.85rem; background: #660000;">
+        🎨 View Canva Design
+      </a>
     </div>
   </header>
 
