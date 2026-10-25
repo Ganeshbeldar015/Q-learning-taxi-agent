@@ -1,10 +1,27 @@
+# Python & Cache artifacts
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-harness/.backup/
+
+# Node & Frontend Build artifacts
 frontend/node_modules/
 frontend/dist/
 
+# Background Scaffold & Internal Harness (not pushed to GitHub)
+harness/
+scripts/
+tests/harness/
+docs/
+report/
+.cursor/
+.github/
+.mcp.json
+
+# Markdown files: Ignore all markdown files except root README.md
+*.md
+*/*.md
+**/*.md
+!/README.md
