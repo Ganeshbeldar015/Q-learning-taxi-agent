@@ -1,4 +1,14 @@
 import React, { useState } from 'react';
+import {
+  FaRoute,
+  FaCopy,
+  FaCheck,
+  FaFlagCheckered,
+  FaBoxOpen,
+  FaBullseye,
+  FaStar,
+  FaTriangleExclamation
+} from 'react-icons/fa6';
 
 const LANDMARK_NAMES = [
   { name: 'R', r: 0, c: 0 },
@@ -25,13 +35,13 @@ export default function ShortestPathCard({
   const dLoc = LANDMARK_NAMES[startStep.dest_loc] || { name: '?', r: 0, c: 0 };
 
   const handleCopyRoute = async () => {
-    let text = `🚖 Taxi-v4 Shortest Path Route Trajectory\n`;
+    let text = `Taxi-v4 Shortest Path Route Trajectory\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `• Policy: ${policyName}\n`;
     text += `• Environment Seed: ${seed}\n`;
     text += `• Total Path Steps: ${totalSteps}\n`;
     text += `• Total Episode Reward: ${finalStep.total_reward >= 0 ? '+' : ''}${finalStep.total_reward}\n`;
-    text += `• Passenger Pickup: ${pLoc.name} (${pLoc.r}, ${pLoc.c}) ➔ Destination: ${dLoc.name} (${dLoc.r}, ${dLoc.c})\n`;
+    text += `• Passenger Pickup: ${pLoc.name} (${pLoc.r}, ${pLoc.c}) -> Destination: ${dLoc.name} (${dLoc.r}, ${dLoc.c})\n`;
     text += `• Outcome: ${finalStep.terminated ? 'SUCCESS (Delivered)' : 'INCOMPLETE'}\n\n`;
     text += `Waypoints & Actions Sequence:\n`;
 
@@ -39,7 +49,7 @@ export default function ShortestPathCard({
       if (i === 0) {
         text += `  Step  0: Taxi start at (${s.taxi_row}, ${s.taxi_col})\n`;
       } else {
-        text += `  Step ${String(i).padStart(2, ' ')}: Action ${s.action_symbol} ${s.action_name.padEnd(10, ' ')} ➔ Taxi at (${s.taxi_row}, ${s.taxi_col}) [Reward: ${s.reward > 0 ? '+' : ''}${s.reward}]\n`;
+        text += `  Step ${String(i).padStart(2, ' ')}: Action ${s.action_symbol} ${s.action_name.padEnd(10, ' ')} -> Taxi at (${s.taxi_row}, ${s.taxi_col}) [Reward: ${s.reward > 0 ? '+' : ''}${s.reward}]\n`;
       }
     });
     text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
@@ -57,7 +67,7 @@ export default function ShortestPathCard({
     <div className="card" style={{ marginTop: '18px', padding: '16px', background: '#ffffff' }}>
       <div className="card-header" style={{ marginBottom: '12px' }}>
         <div className="card-title" style={{ fontSize: '1rem' }}>
-          📍 Shortest Path Route Trajectory
+          <FaRoute style={{ marginRight: '6px' }} /> Shortest Path Route Trajectory
         </div>
         <button
           className="btn btn-secondary"
@@ -69,7 +79,15 @@ export default function ShortestPathCard({
             color: copySuccess ? '#ffffff' : ''
           }}
         >
-          {copySuccess ? '✅ Copied to Clipboard!' : '📋 Share / Copy Route'}
+          {copySuccess ? (
+            <>
+              <FaCheck style={{ marginRight: '4px' }} /> Copied to Clipboard!
+            </>
+          ) : (
+            <>
+              <FaCopy style={{ marginRight: '4px' }} /> Share / Copy Route
+            </>
+          )}
         </button>
       </div>
 
@@ -77,14 +95,18 @@ export default function ShortestPathCard({
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '0.8rem', marginBottom: '12px', maxHeight: '120px', overflowY: 'auto' }}>
         {trace.map((step, i) => {
           let label = `${step.action_symbol} (${step.taxi_row},${step.taxi_col})`;
+          let icon = null;
           let extraClass = '';
           if (i === 0) {
-            label = `🏁 Start (${step.taxi_row},${step.taxi_col})`;
+            label = `Start (${step.taxi_row},${step.taxi_col})`;
+            icon = <FaFlagCheckered style={{ marginRight: '4px' }} />;
           } else if (step.action === 4) {
-            label = `📦 Pickup (${step.taxi_row},${step.taxi_col})`;
+            label = `Pickup (${step.taxi_row},${step.taxi_col})`;
+            icon = <FaBoxOpen style={{ marginRight: '4px' }} />;
             extraClass = 'pickup';
           } else if (step.action === 5) {
-            label = `🎯 Dropoff (${step.taxi_row},${step.taxi_col})`;
+            label = `Dropoff (${step.taxi_row},${step.taxi_col})`;
+            icon = <FaBullseye style={{ marginRight: '4px' }} />;
             extraClass = 'dropoff';
           }
 
@@ -96,6 +118,7 @@ export default function ShortestPathCard({
               onClick={() => onJumpToStep(i)}
               title={`Jump to Step ${i} - ${step.action_name}`}
             >
+              {icon}
               {label}
             </div>
           );
@@ -108,7 +131,15 @@ export default function ShortestPathCard({
           Total Distance: <strong style={{ color: 'var(--primary-maroon)' }}>{totalSteps} steps</strong> (Reward: {finalStep.total_reward >= 0 ? '+' : ''}{finalStep.total_reward})
         </span>
         <span className={`badge ${finalStep.terminated ? 'badge-green' : 'badge-maroon'}`}>
-          {finalStep.terminated ? '★ 100% Shortest Path' : '⚠️ Incomplete'}
+          {finalStep.terminated ? (
+            <>
+              <FaStar style={{ marginRight: '4px' }} /> 100% Shortest Path
+            </>
+          ) : (
+            <>
+              <FaTriangleExclamation style={{ marginRight: '4px' }} /> Incomplete
+            </>
+          )}
         </span>
       </div>
     </div>

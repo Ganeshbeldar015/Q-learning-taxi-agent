@@ -1,4 +1,14 @@
 import React from 'react';
+import {
+  FaDice,
+  FaBolt,
+  FaRotateLeft,
+  FaBackwardStep,
+  FaPlay,
+  FaPause,
+  FaForwardStep,
+  FaForwardFast
+} from 'react-icons/fa6';
 
 export default function ControlsPanel({
   policy,
@@ -42,10 +52,10 @@ export default function ControlsPanel({
           style={{ width: '110px' }}
         />
         <button className="btn btn-secondary" onClick={onRandomizeSeed}>
-          🎲 Random
+          <FaDice style={{ marginRight: '5px' }} /> Random
         </button>
         <button className="btn" onClick={onRunRollout}>
-          ⚡ Run Rollout
+          <FaBolt style={{ marginRight: '5px' }} /> Run Rollout
         </button>
       </div>
 
@@ -66,20 +76,28 @@ export default function ControlsPanel({
 
       {/* Playback Controls */}
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '6px' }}>
-        <button className="btn btn-secondary" onClick={() => onJumpToStep(0)}>
-          ⏮ Reset
+        <button className="btn btn-secondary" onClick={() => onJumpToStep(0)} title="Reset to start">
+          <FaRotateLeft style={{ marginRight: '4px' }} /> Reset
         </button>
-        <button className="btn btn-secondary" onClick={() => onStepDelta(-1)}>
-          ◀ Prev
+        <button className="btn btn-secondary" onClick={() => onStepDelta(-1)} title="Previous step">
+          <FaBackwardStep style={{ marginRight: '4px' }} /> Prev
         </button>
         <button className="btn" onClick={onTogglePlayPause} style={{ minWidth: '100px' }}>
-          {isPlaying ? '⏸ Pause' : '▶ Play'}
+          {isPlaying ? (
+            <>
+              <FaPause style={{ marginRight: '5px' }} /> Pause
+            </>
+          ) : (
+            <>
+              <FaPlay style={{ marginRight: '5px' }} /> Play
+            </>
+          )}
         </button>
-        <button className="btn btn-secondary" onClick={() => onStepDelta(1)}>
-          Next ▶
+        <button className="btn btn-secondary" onClick={() => onStepDelta(1)} title="Next step">
+          Next <FaForwardStep style={{ marginLeft: '4px' }} />
         </button>
-        <button className="btn btn-secondary" onClick={() => onJumpToStep(maxSteps)}>
-          End ⏭
+        <button className="btn btn-secondary" onClick={() => onJumpToStep(maxSteps)} title="Jump to end">
+          End <FaForwardFast style={{ marginLeft: '4px' }} />
         </button>
       </div>
     </div>

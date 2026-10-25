@@ -1,4 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  FaTaxi,
+  FaPalette,
+  FaGamepad,
+  FaChartLine,
+  FaImages,
+  FaCircleCheck,
+  FaTriangleExclamation,
+  FaShieldHalved
+} from 'react-icons/fa6';
 import ThreeTaxiScene from './components/ThreeTaxiScene';
 import ControlsPanel from './components/ControlsPanel';
 import ShortestPathCard from './components/ShortestPathCard';
@@ -87,19 +97,29 @@ export default function App() {
       {/* HEADER */}
       <header>
         <div className="header-titles">
-          <h1>🚖 Taxi-v4 Q-Learning 3D Agent Dashboard</h1>
+          <h1>
+            <FaTaxi style={{ color: 'var(--accent-gold)', marginRight: '8px' }} />
+            Taxi-v4 Q-Learning 3D Agent Dashboard
+          </h1>
           <p>React 18 & Three.js 3D WebGL Spatial Planning and Unbiased Q-Learning Simulation</p>
         </div>
         <div className="header-badges">
-          <span className="badge badge-green">100% Success Rate</span>
-          <span className="badge badge-maroon">0 Illegal Moves</span>
+          <span className="badge badge-green">
+            <FaCircleCheck style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+            100% Success Rate
+          </span>
+          <span className="badge badge-maroon">
+            <FaShieldHalved style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+            0 Illegal Moves
+          </span>
           <a
             href="https://canva.link/vog4wcqpdx5qgqx"
             target="_blank"
             rel="noreferrer"
             className="canva-link-btn"
           >
-            🎨 View Canva Design
+            <FaPalette style={{ marginRight: '5px' }} />
+            View Canva Design
           </a>
         </div>
       </header>
@@ -110,19 +130,22 @@ export default function App() {
           className={`tab-btn ${activeTab === 'sim' ? 'active' : ''}`}
           onClick={() => setActiveTab('sim')}
         >
-          🎮 3D Interactive Simulation
+          <FaGamepad style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          3D Interactive Simulation
         </button>
         <button
           className={`tab-btn ${activeTab === 'bench' ? 'active' : ''}`}
           onClick={() => setActiveTab('bench')}
         >
-          📊 Comparative Benchmarks
+          <FaChartLine style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          Comparative Benchmarks
         </button>
         <button
           className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
           onClick={() => setActiveTab('gallery')}
         >
-          🖼️ Publication Figures (V1–V9)
+          <FaImages style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          Publication Figures (V1–V9)
         </button>
       </div>
 
@@ -134,13 +157,19 @@ export default function App() {
             <div className="card-header">
               <div className="card-title">Three.js 3D WebGL City Grid World</div>
               <span className={`badge ${isDelivered ? 'badge-green' : 'badge-maroon'}`}>
-                {isDelivered
-                  ? 'Delivered! 🎉'
-                  : isTruncated
-                  ? 'Truncated ⚠️'
-                  : currentStep && currentStep.pass_loc === 4
-                  ? 'En Route to Destination'
-                  : 'En Route to Passenger'}
+                {isDelivered ? (
+                  <>
+                    <FaCircleCheck style={{ marginRight: '5px' }} /> Delivered!
+                  </>
+                ) : isTruncated ? (
+                  <>
+                    <FaTriangleExclamation style={{ marginRight: '5px' }} /> Truncated
+                  </>
+                ) : currentStep && currentStep.pass_loc === 4 ? (
+                  'En Route to Destination'
+                ) : (
+                  'En Route to Passenger'
+                )}
               </span>
             </div>
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTaxi, FaBullseye, FaUserCheck, FaLocationDot } from 'react-icons/fa6';
 
 const LANDMARKS = [
   { name: 'R', r: 0, c: 0 },
@@ -13,11 +14,20 @@ export default function TelemetryCard({ step, maxSteps, seed }) {
   const dest = LANDMARKS[step.dest_loc] || { name: '?', r: 0, c: 0 };
   const pass = LANDMARKS[step.pass_loc];
 
-  let passStatus = 'En Route';
+  let passStatus = <span>En Route</span>;
   if (step.pass_loc === 4) {
-    passStatus = '🚖 Inside Taxi';
+    passStatus = (
+      <span>
+        <FaTaxi style={{ marginRight: '5px', verticalAlign: 'middle' }} /> Inside Taxi
+      </span>
+    );
   } else if (pass) {
-    passStatus = `Waiting at ${pass.name} (${pass.r}, ${pass.c})`;
+    passStatus = (
+      <span>
+        <FaUserCheck style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+        Waiting at {pass.name} ({pass.r}, {pass.c})
+      </span>
+    );
   }
 
   return (
@@ -59,7 +69,10 @@ export default function TelemetryCard({ step, maxSteps, seed }) {
           Passenger Status: <strong style={{ color: 'var(--primary-maroon)' }}>{passStatus}</strong>
         </div>
         <div>
-          Target Destination: <strong style={{ color: 'var(--green)' }}>{dest.name} ({dest.r}, {dest.c})</strong>
+          Target Destination: <strong style={{ color: 'var(--green)' }}>
+            <FaBullseye style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+            {dest.name} ({dest.r}, {dest.c})
+          </strong>
         </div>
       </div>
     </div>

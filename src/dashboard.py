@@ -108,7 +108,7 @@ def simulate(req: SimulationRequest) -> dict[str, Any]:
     done = False
 
     action_names = ["South", "North", "East", "West", "Pickup", "Dropoff"]
-    action_symbols = ["↓", "↑", "→", "←", "📦", "🏁"]
+    action_symbols = ["↓", "↑", "→", "←", "[P]", "[D]"]
 
     # Initial state record
     r, c, p, d = decode_state(int(obs))
@@ -1119,9 +1119,9 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       return (
         <div className="three-canvas-container" ref={mountRef}>
           <div className="three-controls-overlay">
-            <button className="three-view-btn" onClick={() => setCameraView('iso')}>📐 Isometric</button>
-            <button className="three-view-btn" onClick={() => setCameraView('top')}>🔝 Top-Down</button>
-            <button className="three-view-btn" onClick={() => setCameraView('close')}>🔍 Chase Cam</button>
+            <button className="three-view-btn" onClick={() => setCameraView('iso')}>Isometric</button>
+            <button className="three-view-btn" onClick={() => setCameraView('top')}>Top-Down</button>
+            <button className="three-view-btn" onClick={() => setCameraView('close')}>Chase Cam</button>
           </div>
           <div className="three-legend">
             <span style={{ color: '#dc2626' }}>● R</span>
@@ -1178,7 +1178,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         <div className="card" style={{ marginTop: '18px', padding: '16px', background: '#ffffff' }}>
           <div className="card-header" style={{ marginBottom: '12px' }}>
             <div className="card-title" style={{ fontSize: '1rem' }}>
-              📍 Shortest Path Route Trajectory
+              Shortest Path Route Trajectory
             </div>
             <button
               className="btn btn-secondary"
@@ -1190,7 +1190,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                 color: copied ? '#ffffff' : ''
               }}
             >
-              {copied ? '✅ Copied to Clipboard!' : '📋 Share / Copy Route'}
+              {copied ? 'Copied to Clipboard' : 'Share / Copy Route'}
             </button>
           </div>
 
@@ -1199,12 +1199,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
               let label = `${step.action_symbol} (${step.taxi_row},${step.taxi_col})`;
               let extraClass = '';
               if (i === 0) {
-                label = `🏁 Start (${step.taxi_row},${step.taxi_col})`;
+                label = `Start (${step.taxi_row},${step.taxi_col})`;
               } else if (step.action === 4) {
-                label = `📦 Pickup (${step.taxi_row},${step.taxi_col})`;
+                label = `Pickup (${step.taxi_row},${step.taxi_col})`;
                 extraClass = 'pickup';
               } else if (step.action === 5) {
-                label = `🎯 Dropoff (${step.taxi_row},${step.taxi_col})`;
+                label = `Dropoff (${step.taxi_row},${step.taxi_col})`;
                 extraClass = 'dropoff';
               }
 
@@ -1227,7 +1227,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
               Total Distance: <strong style={{ color: 'var(--primary-maroon)' }}>{totalSteps} steps</strong> (Reward: {finalStep.total_reward >= 0 ? '+' : ''}{finalStep.total_reward})
             </span>
             <span className={`badge ${finalStep.terminated ? 'badge-green' : 'badge-maroon'}`}>
-              {finalStep.terminated ? '★ 100% Shortest Path' : '⚠️ Incomplete'}
+              {finalStep.terminated ? '100% Shortest Path' : 'Incomplete'}
             </span>
           </div>
         </div>
@@ -1241,7 +1241,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       const pass = LANDMARKS[step.pass_loc];
 
       let passStatus = 'En Route';
-      if (step.pass_loc === 4) passStatus = '🚖 Inside Taxi';
+      if (step.pass_loc === 4) passStatus = 'Inside Taxi';
       else if (pass) passStatus = `Waiting at ${pass.name} (${pass.r}, ${pass.c})`;
 
       return (
@@ -1514,27 +1514,27 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         <div className="container">
           <header>
             <div className="header-titles">
-              <h1>🚖 Taxi-v4 Q-Learning 3D Agent Dashboard</h1>
+              <h1>Taxi-v4 Q-Learning 3D Agent Dashboard</h1>
               <p>React 18 & Three.js 3D WebGL Spatial Planning and Unbiased Q-Learning Simulation</p>
             </div>
             <div className="header-badges">
               <span className="badge badge-green">100% Success Rate</span>
               <span className="badge badge-maroon">0 Illegal Moves</span>
               <a href="https://canva.link/vog4wcqpdx5qgqx" target="_blank" rel="noreferrer" className="canva-link-btn">
-                🎨 View Canva Design
+                View Canva Design
               </a>
             </div>
           </header>
 
           <div className="tabs-nav">
             <button className={`tab-btn ${activeTab === 'sim' ? 'active' : ''}`} onClick={() => setActiveTab('sim')}>
-              🎮 3D Interactive Simulation
+              3D Interactive Simulation
             </button>
             <button className={`tab-btn ${activeTab === 'bench' ? 'active' : ''}`} onClick={() => setActiveTab('bench')}>
-              📊 Comparative Benchmarks
+              Comparative Benchmarks
             </button>
             <button className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`} onClick={() => setActiveTab('gallery')}>
-              🖼️ Publication Figures (V1–V9)
+              Publication Figures (V1–V9)
             </button>
           </div>
 
@@ -1545,9 +1545,9 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                   <div className="card-title">Three.js 3D WebGL City Grid World</div>
                   <span className={`badge ${isDelivered ? 'badge-green' : 'badge-maroon'}`}>
                     {isDelivered
-                      ? 'Delivered! 🎉'
+                      ? 'Delivered'
                       : isTruncated
-                      ? 'Truncated ⚠️'
+                      ? 'Truncated'
                       : currentStep && currentStep.pass_loc === 4
                       ? 'En Route to Destination'
                       : 'En Route to Passenger'}
@@ -1572,8 +1572,8 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                   <div className="control-row">
                     <span className="control-label">Seed:</span>
                     <input type="number" value={seed} onChange={(e) => setSeed(parseInt(e.target.value, 10) || 0)} style={{ width: '110px' }} />
-                    <button className="btn btn-secondary" onClick={handleRandomizeSeed}>🎲 Random</button>
-                    <button className="btn" onClick={() => fetchSimulation()}>⚡ Run Rollout</button>
+                    <button className="btn btn-secondary" onClick={handleRandomizeSeed}>Random</button>
+                    <button className="btn" onClick={() => fetchSimulation()}>Run Rollout</button>
                   </div>
 
                   <div className="scrubber-container">
@@ -1591,13 +1591,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                   </div>
 
                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '6px' }}>
-                    <button className="btn btn-secondary" onClick={() => handleJumpToStep(0)}>⏮ Reset</button>
-                    <button className="btn btn-secondary" onClick={() => handleStepDelta(-1)}>◀ Prev</button>
+                    <button className="btn btn-secondary" onClick={() => handleJumpToStep(0)}>Reset</button>
+                    <button className="btn btn-secondary" onClick={() => handleStepDelta(-1)}>Prev</button>
                     <button className="btn" onClick={() => setIsPlaying(p => !p)} style={{ minWidth: '100px' }}>
-                      {isPlaying ? '⏸ Pause' : '▶ Play'}
+                      {isPlaying ? 'Pause' : 'Play'}
                     </button>
-                    <button className="btn btn-secondary" onClick={() => handleStepDelta(1)}>Next ▶</button>
-                    <button className="btn btn-secondary" onClick={() => handleJumpToStep(trace.length - 1)}>End ⏭</button>
+                    <button className="btn btn-secondary" onClick={() => handleStepDelta(1)}>Next</button>
+                    <button className="btn btn-secondary" onClick={() => handleJumpToStep(trace.length - 1)}>End</button>
                   </div>
                 </div>
 

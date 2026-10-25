@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { FaCube, FaCompass, FaCamera } from 'react-icons/fa6';
 
 const LANDMARKS = [
   { r: 0, c: 0, name: 'R', color: 0xef4444, label: 'Red' },
@@ -432,9 +433,15 @@ export default function ThreeTaxiScene({ currentTrace, currentStepIdx, onJumpToS
     <div className="three-canvas-container" ref={mountRef}>
       {/* 3D Viewport Controls Overlay */}
       <div className="three-controls-overlay">
-        <button className="three-view-btn" onClick={() => setCameraView('iso')}>📐 Isometric</button>
-        <button className="three-view-btn" onClick={() => setCameraView('top')}>🔝 Top-Down</button>
-        <button className="three-view-btn" onClick={() => setCameraView('close')}>🔍 Chase Cam</button>
+        <button className="three-view-btn" onClick={() => setCameraView('iso')}>
+          <FaCube style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Isometric
+        </button>
+        <button className="three-view-btn" onClick={() => setCameraView('top')}>
+          <FaCompass style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Top-Down
+        </button>
+        <button className="three-view-btn" onClick={() => setCameraView('close')}>
+          <FaCamera style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Chase Cam
+        </button>
       </div>
 
       {/* 3D Legend */}
