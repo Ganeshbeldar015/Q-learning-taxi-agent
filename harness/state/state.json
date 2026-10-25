@@ -27,7 +27,7 @@
     "build": 1,
     "qa": 1
   },
-  "last_commit": "edab789",
+  "last_commit": "6207da5",
   "last_gate": {
     "name": "G4",
     "status": "pass",
