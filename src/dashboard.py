@@ -16,7 +16,7 @@ from typing import Any
 import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -42,6 +42,11 @@ if figures_path.exists():
 static_path = Path("src/static")
 if static_path.exists():
     app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+
+# Mount compiled React frontend assets if built
+dist_assets_path = Path("frontend/dist/assets")
+if dist_assets_path.exists():
+    app.mount("/assets", StaticFiles(directory=str(dist_assets_path)), name="assets")
 
 # Load models into memory
 MODELS: dict[str, np.ndarray | None] = {}
@@ -1632,9 +1637,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 """
 
 
-@app.get("/", response_class=HTMLResponse)
-def index() -> HTMLResponse:
-    """Serve the single-page dashboard HTML."""
+@app.get("/")
+def index() -> Response:
+    """Serve the compiled React production build if available, otherwise embedded fallback."""
+    dist_index = Path("frontend/dist/index.html")
+    if dist_index.exists():
+        return FileResponse(str(dist_index))
     return HTMLResponse(content=DASHBOARD_HTML)
 
 
