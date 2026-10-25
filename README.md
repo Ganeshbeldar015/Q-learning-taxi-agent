@@ -30,19 +30,23 @@ pytest tests/ -v
 python -c "from src.env_utils import make_env, run_random_baseline; env = make_env(); run_random_baseline(env, episodes=1000, seed=42, output_path='results/baseline_random.json'); env.close()"
 ```
 
+### Run Training
+```bash
+python -c "from src.env_utils import load_config; from src.train import train; cfg = load_config(); train(cfg, log_csv_path='results/training_log.csv', q_table_save_path='results/q_table_baseline.npy')"
+```
+
 ## Empirical Benchmarks
 
-### Random Policy Baseline (1,000 Episodes)
-Source: [results/baseline_random.json](results/baseline_random.json)
+### Baseline Agent vs. Random Baseline
+- Random Baseline: [results/baseline_random.json](results/baseline_random.json)
+- Trained Baseline Model: [results/q_table_baseline.npy](results/q_table_baseline.npy) (trained 5,000 episodes, converged at Episode 2300)
 
-| Metric | Random Baseline | Target (Tuned Greedy) |
-|---|---|---|
-| Average Reward | -772.63 | $\ge 7.5$ |
-| Reward Std | 98.97 | — |
-| Average Steps | 196.56 | $\le 14$ |
-| Success Rate | 5.0% | 100% |
-| Truncation Rate | 95.0% | 0% |
-| Illegal Actions | 64,124 | 0 |
+| Metric | Random Policy | Trained Baseline (5,000 eps) | Target (Tuned Greedy) |
+|---|---|---|---|
+| Validation Reward | -772.63 | **+8.34** | $\ge 7.5$ |
+| Reward Std | 98.97 | — | — |
+| Convergence Episode | N/A (did not converge) | **2300** | < Baseline |
+| Success Rate | 5.0% | **100%** | 100% |
 
 ## Project Structure
 ```

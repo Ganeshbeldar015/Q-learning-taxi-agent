@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sprint 2] - 2026-10-25
+### Added
+- Implemented `QLearningAgent` in `src/agent.py` with Bellman update rule, unbiased uniform random tie-breaking, and `.npy` save/load.
+- Implemented `MultiplicativeSchedule` and `LinearSchedule` in `src/schedules.py` with floor constraints.
+- Implemented `src/train.py` with greedy validation over fixed evaluation seeds, convergence detector (3-in-a-row $\ge 7.0$), and CSV episodic metric logging.
+- Added comprehensive unit tests in `tests/test_agent.py`, `tests/test_schedules.py`, and `tests/test_train.py` (57 tests passing).
+- Verified baseline training run reaching +8.34 validation reward with convergence at episode 2300 in 17.78 seconds.
+
 ## [Sprint 1] - 2026-10-25
 ### Added
 - Created `requirements.txt` with pinned dependencies (`gymnasium`, `numpy`, `pandas`, `matplotlib`, `pyyaml`, `pytest`, `ruff`, `mypy`).

@@ -1,0 +1,46 @@
+{
+  "task_id": "T-0002",
+  "from": "builder",
+  "to": "reviewer",
+  "artifact": "harness/artifacts/T-0002/05-build.md",
+  "status": "complete",
+  "summary": "Implemented QLearningAgent, decay schedules, and train loop. Verified convergence at episode 2300 with 8.34 validation reward.",
+  "inputs_consumed": [
+    "harness/artifacts/T-0002/03-plan.md",
+    "harness/artifacts/T-0002/04-tests.md"
+  ],
+  "acceptance_refs": [
+    "AC-003-a",
+    "AC-003-b",
+    "AC-003-c",
+    "AC-004-a",
+    "AC-004-b"
+  ],
+  "open_questions": [],
+  "assumptions": [
+    "5000-episode training converges cleanly to >8.0 validation reward"
+  ],
+  "files_touched": [
+    "src/agent.py",
+    "src/schedules.py",
+    "src/train.py",
+    "results/training_log.csv",
+    "results/q_table_baseline.npy",
+    "harness/artifacts/T-0002/05-build.md"
+  ],
+  "checks_run": [
+    {
+      "cmd": "pytest tests/ -v",
+      "exit": 0
+    },
+    {
+      "cmd": "python -m ruff check src tests",
+      "exit": 0
+    },
+    {
+      "cmd": "python -m mypy src --ignore-missing-imports",
+      "exit": 0
+    }
+  ],
+  "next_expected_artifact": "06-review.md"
+}
