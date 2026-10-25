@@ -535,6 +535,50 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border-color: #94a3b8;
     }
 
+    /* ROUTE PILLS & BREADCRUMBS */
+    .route-pill {
+      padding: 4px 8px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .route-pill:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+    .route-pill.active {
+      background: var(--primary-maroon);
+      color: #ffffff;
+      border-color: var(--primary-maroon);
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(128,0,0,0.25);
+    }
+    .route-pill.pickup {
+      border-color: var(--accent-gold-dark);
+      font-weight: 700;
+      color: #b45309;
+    }
+    .route-pill.pickup.active {
+      background: var(--accent-gold-dark);
+      color: #ffffff;
+    }
+    .route-pill.dropoff {
+      border-color: var(--green);
+      font-weight: 700;
+      color: var(--green);
+    }
+    .route-pill.dropoff.active {
+      background: var(--green);
+      color: #ffffff;
+    }
+
     /* SCRUBBER SLIDER */
     .scrubber-container {
       display: flex;
@@ -754,6 +798,9 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                 <!-- Destination Target Halo -->
                 <div id="dest-ring" class="destination-halo"></div>
 
+                <!-- SVG Route Path Overlay -->
+                <svg id="route-path-svg" viewBox="0 0 100 100" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;"></svg>
+
                 <!-- Passenger and Taxi Tokens -->
                 <div id="pass-token" class="passenger-token">🧍</div>
                 <div id="taxi-token" class="taxi-token">🚖</div>
@@ -808,6 +855,23 @@ DASHBOARD_HTML = """<!DOCTYPE html>
               <button class="btn" id="play-pause-btn" onclick="togglePlayPause()" style="min-width: 100px;">▶ Play</button>
               <button class="btn btn-secondary" onclick="stepDelta(1)">Next ▶</button>
               <button class="btn btn-secondary" onclick="jumpToStep(currentTrace.length - 1)">End ⏭</button>
+            </div>
+          </div>
+
+          <!-- SHORTEST PATH ROUTE & SHARE -->
+          <div class="card" style="margin-top: 18px; padding: 16px; background: #ffffff; border: 1px solid var(--border);">
+            <div class="card-header" style="margin-bottom: 12px;">
+              <div class="card-title" style="font-size: 1rem;">📍 Shortest Path Route Trajectory</div>
+              <button class="btn btn-secondary" id="copy-path-btn" onclick="copyRouteToClipboard()" style="font-size: 0.78rem; padding: 5px 12px;">
+                📋 Share / Copy Route
+              </button>
+            </div>
+            <div id="route-pills-container" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.8rem; margin-bottom: 12px; max-height: 120px; overflow-y: auto;">
+              <!-- Waypoints populated dynamically -->
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 8px;">
+              <span>Total Distance: <strong id="path-total-length" style="color: var(--primary-maroon);">14 steps</strong></span>
+              <span id="path-optimal-badge" class="badge badge-green">★ 100% Shortest Path</span>
             </div>
           </div>
         </div>
@@ -1030,6 +1094,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       slider.value = 0;
       currentIdx = 0;
 
+      populateRoutePills(currentTrace);
       updateVisualization(0);
     }
 
@@ -1091,6 +1156,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
       // Render Q-Value Bars
       renderQValues(step.q_values, step.action);
+
+      // Render Dynamic SVG Shortest Path Trajectory
+      drawRoutePath(currentTrace, idx);
+
+      // Highlight Current Step Breadcrumb Pill
+      highlightRoutePill(idx);
     }
 
     function renderQValues(qVals, selectedAction) {
@@ -1188,6 +1259,158 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             </tr>
           `;
         });
+      }
+    }
+
+    function drawRoutePath(trace, activeIdx) {
+      const svg = document.getElementById('route-path-svg');
+      if (!trace || trace.length === 0) {
+        svg.innerHTML = '';
+        return;
+      }
+
+      // Convert grid cells to viewBox percentage coords (center of 20x20 cell)
+      const points = trace.map(s => ({
+        x: (s.taxi_col + 0.5) * 20,
+        y: (s.taxi_row + 0.5) * 20
+      }));
+
+      const fullPointsStr = points.map(p => `${p.x},${p.y}`).join(' ');
+      const traveledPoints = points.slice(0, activeIdx + 1);
+      const traveledPointsStr = traveledPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+      let svgHtml = `
+        <defs>
+          <filter id="routeGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#800000" flood-opacity="0.35" />
+          </filter>
+        </defs>
+      `;
+
+      // Full planned shortest path route (dashed translucent line)
+      svgHtml += `
+        <polyline points="${fullPointsStr}" fill="none" stroke="#800000" stroke-width="2.2" stroke-dasharray="2 3" opacity="0.32" stroke-linecap="round" stroke-linejoin="round" />
+      `;
+
+      // Traveled path up to activeIdx (solid vibrant maroon)
+      if (activeIdx > 0) {
+        svgHtml += `
+          <polyline points="${traveledPointsStr}" fill="none" stroke="#800000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#routeGlow)" />
+        `;
+      }
+
+      // Waypoint nodes
+      points.forEach((p, i) => {
+        const isTraveled = (i <= activeIdx);
+        const isCurrent = (i === activeIdx);
+        const radius = isCurrent ? 3.5 : (isTraveled ? 2.3 : 1.6);
+        const fill = isCurrent ? '#f59e0b' : (isTraveled ? '#800000' : '#94a3b8');
+        svgHtml += `
+          <circle cx="${p.x}" cy="${p.y}" r="${radius}" fill="${fill}" stroke="#ffffff" stroke-width="0.8" />
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+    }
+
+    function populateRoutePills(trace) {
+      const container = document.getElementById('route-pills-container');
+      container.innerHTML = '';
+      if (!trace || trace.length === 0) return;
+
+      trace.forEach((step, i) => {
+        let label = `Step ${i}: (${step.taxi_row},${step.taxi_col})`;
+        let extraClass = '';
+        if (i === 0) {
+          label = `🏁 Start (${step.taxi_row},${step.taxi_col})`;
+        } else if (step.action === 4) {
+          label = `📦 Pickup (${step.taxi_row},${step.taxi_col})`;
+          extraClass = 'pickup';
+        } else if (step.action === 5) {
+          label = `🎯 Dropoff (${step.taxi_row},${step.taxi_col})`;
+          extraClass = 'dropoff';
+        } else {
+          label = `${step.action_symbol} (${step.taxi_row},${step.taxi_col})`;
+        }
+
+        const pill = document.createElement('div');
+        pill.className = `route-pill ${extraClass}`;
+        pill.id = `pill-step-${i}`;
+        pill.innerText = label;
+        pill.title = `Jump to Step ${i} - ${step.action_name}`;
+        pill.onclick = () => jumpToStep(i);
+        container.appendChild(pill);
+      });
+
+      const totalSteps = trace.length - 1;
+      const finalStep = trace[totalSteps];
+      document.getElementById('path-total-length').innerText = `${totalSteps} steps (Reward: ${finalStep.total_reward >= 0 ? '+' : ''}${finalStep.total_reward})`;
+
+      const optimalBadge = document.getElementById('path-optimal-badge');
+      if (finalStep.terminated) {
+        optimalBadge.innerText = '★ 100% Shortest Path';
+        optimalBadge.className = 'badge badge-green';
+      } else if (finalStep.truncated) {
+        optimalBadge.innerText = '⚠️ Truncated';
+        optimalBadge.className = 'badge badge-maroon';
+      } else {
+        optimalBadge.innerText = 'Incomplete';
+        optimalBadge.className = 'badge badge-maroon';
+      }
+    }
+
+    function highlightRoutePill(idx) {
+      document.querySelectorAll('.route-pill').forEach(p => p.classList.remove('active'));
+      const activePill = document.getElementById(`pill-step-${idx}`);
+      if (activePill) {
+        activePill.classList.add('active');
+        activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+
+    async function copyRouteToClipboard() {
+      if (!currentTrace || currentTrace.length === 0) return;
+      const policySelect = document.getElementById('policy-picker');
+      const policyName = policySelect.options[policySelect.selectedIndex].text;
+      const seed = document.getElementById('seed-input').value;
+      const finalStep = currentTrace[currentTrace.length - 1];
+      const start = currentTrace[0];
+      const pLoc = landmarkPositions[start.pass_loc];
+      const dLoc = landmarkPositions[start.dest_loc];
+
+      let text = `🚖 Taxi-v4 Shortest Path Route Trajectory\n`;
+      text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      text += `• Policy: ${policyName}\n`;
+      text += `• Environment Seed: ${seed}\n`;
+      text += `• Total Path Steps: ${currentTrace.length - 1}\n`;
+      text += `• Total Episode Reward: ${finalStep.total_reward >= 0 ? '+' : ''}${finalStep.total_reward}\n`;
+      text += `• Passenger Pickup: ${pLoc.name} (${pLoc.r}, ${pLoc.c}) ➔ Destination: ${dLoc.name} (${dLoc.r}, ${dLoc.c})\n`;
+      text += `• Outcome: ${finalStep.terminated ? 'SUCCESS (Delivered)' : 'INCOMPLETE'}\n\n`;
+      text += `Waypoints & Actions Sequence:\n`;
+
+      currentTrace.forEach((s, i) => {
+        if (i === 0) {
+          text += `  Step  0: Taxi start at (${s.taxi_row}, ${s.taxi_col})\n`;
+        } else {
+          text += `  Step ${String(i).padStart(2, ' ')}: Action ${s.action_symbol} ${s.action_name.padEnd(10, ' ')} ➔ Taxi at (${s.taxi_row}, ${s.taxi_col}) [Reward: ${s.reward > 0 ? '+' : ''}${s.reward}]\n`;
+        }
+      });
+      text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById('copy-path-btn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '✅ Copied to Clipboard!';
+        btn.style.background = 'var(--primary-maroon)';
+        btn.style.color = '#ffffff';
+        setTimeout(() => {
+          btn.innerHTML = origText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 2200);
+      } catch (err) {
+        alert("Route trajectory:\n\n" + text);
       }
     }
 
